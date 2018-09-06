@@ -5,12 +5,13 @@ const exec  = require('child_process').exec;
 
 module.exports = function(handler) {
 
-        handler.on('error', function (err) {
+        handler.on('error',  (err) => {
           console.error('Error:', err.message)
         });
         
-        handler.on('push', function (event) {
+        handler.on('push',  (event) => {
                 let data = event.payload;
+                console.log(data);
                 if (!data || !data.hook || !data.hook.config || !data.hook.config.secret || 
                         !data.repository || !data.repository.name){
                         console.log("Wrong data", data);
@@ -49,7 +50,7 @@ module.exports = function(handler) {
                 }       
         });
         
-        handler.on('issues', function (event) {
+        handler.on('issues',  (event) => {
           console.log('Received an issue event for %s action=%s: #%d %s',
             event.payload.repository.name,
             event.payload.action,
