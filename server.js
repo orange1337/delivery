@@ -1,31 +1,58 @@
 /*
   Created by Rost CI/CD 
 */
-const createHandler = require('github-webhook-handler');
-const handler       = createHandler({ path: '/delivery', secret: 'cryptolionsDelivery1337' })
+const express       = require('express');
+const path          = require('path');
+const cookieParser  = require('cookie-parser');
+const bodyParser    = require('body-parser');
+const helmet        = require('helmet');
+const compression   = require('compression');
 
 process.on('uncaughtException', (err) => {
     console.log(`======= UncaughtException Main Server :  ${err}`);
 });
 
+const app  = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(helmet());
+app.use(compression());
 
 // ################### create http node express server
 const debug = require('debug')('asd:server');
 const http = require('http');
 const port = normalizePort(process.env.PORT || '3040');
-
-const server = http.createServer((req, res) => {
-    handler(req, res,  (err) => {
-      res.statusCode = 404
-      res.end('no such location');
-    });
-});
+app.set('port', port);
+const server = http.createServer(app);
 
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-require('./router/main.router')(handler);
+
+require('./router/main.router')(app);
+
+// ========== cron tasks
+//require('./crons/main.cron')();
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  console.error('=====Page not Found ', err);
+  // render the error page
+  res.status(err.status || 500).end('Page not Found');
+});
 
 function normalizePort(val) {
   var port = parseInt(val, 10);

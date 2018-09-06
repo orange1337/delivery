@@ -1,61 +1,68 @@
 /*
 * Created by Rost
 */
-const exec  = require('child_process').exec;
+const path 		= require('path');
+const fs   		= require('fs');
+const exec 		= require('child_process').exec;
+const crypto            = require('crypto');
+const secret 	        = "cryptolionsDelivery1337";
 
-module.exports = function(handler) {
+module.exports = function(router) {
 
-        handler.on('error',  (err) => {
-          console.error('Error:', err.message)
-        });
-        
-        handler.on('push',  (event) => {
-                let data = event.payload;
-                console.log(data);
+	router.post('/delivery', (req, res) => {
 
-                if (!data || !data.repository || !data.repository.name){
-                        console.log("Wrong data", data);
-                }
+		let data = req.body;
+                let sign = req.headers['X-Hub-Signature'];
 
-                if (data.repository.name === "eos-monitor"){
-                        console.log('====== running delivery eos-monitor', new Date());
-                        exec('cd ~ && ./delivery.sh eos-monitor', { maxBuffer: 1024 * 1000000 }, (error, sdtout, stderror) => {
-                              if (error) {
-                                return console.error(error);
-                              }
-                              if (stderror) {
-                                console.error('stderror', stderror);
-                              }
-                              console.log('sdtout', sdtout);
+		if (!data  || !data.repository || !data.repository.name){
+			console.log("Wrong data", data);
+			return res.send(444, "Wrong data");
+		}
+
+                let createSign = sign(data);
+		if (sign !== createSign){
+                        console.log("Sign not equal", sign, createSign);
+			return res.send(500, "Wrong secret", createSign);
+		}
+
+		if (data.repository.name === "eos-monitor"){
+			console.log('====== running delivery eos-monitor', new Date());
+        	        exec('cd ~ && ./delivery.sh eos-monitor', { maxBuffer: 1024 * 1000000 }, (error, sdtout, stderror) => {
+        	              if (error) {
+        	                return console.error(error);
+        	              }
+        	              if (stderror) {
+        	                console.error('stderror', stderror);
+        	              }
+        	              console.log('sdtout', sdtout);
                               
-                        });
-                } else if (data.repository.name === "eos-monitor-back"){ 
-                        console.log('====== running delivery eos-monitor', new Date());
-                        exec('cd ~ && ./delivery.sh eos-monitor-back', { maxBuffer: 1024 * 1000000 }, (error, sdtout, stderror) => {
-                              if (error) {
-                                return console.error(error);
-                              }
-                              if (stderror) {
-                                console.error('stderror', stderror);
-                              }
-                              console.log('sdtout', sdtout);
+        	        });
+                        res.end();
+		} else if (data.repository.name === "eos-monitor-back"){ 
+			console.log('====== running delivery eos-monitor', new Date());
+        	        exec('cd ~ && ./delivery.sh eos-monitor-back', { maxBuffer: 1024 * 1000000 }, (error, sdtout, stderror) => {
+        	              if (error) {
+        	                return console.error(error);
+        	              }
+        	              if (stderror) {
+        	                console.error('stderror', stderror);
+        	              }
+        	              console.log('sdtout', sdtout);
                              
-                        });
-                } else {
-                   console.error("Repo not found!");     
-                }       
-        });
-        
-        handler.on('issues',  (event) => {
-          console.log('Received an issue event for %s action=%s: #%d %s',
-            event.payload.repository.name,
-            event.payload.action,
-            event.payload.issue.number,
-            event.payload.issue.title)
-        });
+        	        });
+                        res.end();
+		} else {
+                   res.send("Repo not found!");     
+                }	
+		
+	});
 
 // ============== END of exports 
 };
+
+function sign (data) {
+    return 'sha1=' + crypto.createHmac('sha1', secret).update(data).digest('hex')
+}
 
 
 
