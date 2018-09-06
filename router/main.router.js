@@ -24,28 +24,32 @@ module.exports = function(router) {
 
 		if (data.repository.name === "eos-monitor"){
 			console.log('====== running delivery eos-monitor', new Date());
-        	exec('cd ~ && ./delivery.sh eos-monitor', (error, sdtout, stderror) => {
-        	      if (error) {
-        	        return console.error(error);
-        	      }
-        	      if (stderror) {
-        	        console.error('stderror', stderror);
-        	      }
-        	      console.log('sdtout', sdtout);
-        	});
+        	        exec('cd ~ && ./delivery.sh eos-monitor', { maxBuffer: 1024 * 1000000 }, (error, sdtout, stderror) => {
+        	              if (error) {
+        	                return console.error(error);
+        	              }
+        	              if (stderror) {
+        	                console.error('stderror', stderror);
+        	              }
+        	              console.log('sdtout', sdtout);
+                              res.end();
+        	        });
 		} else if (data.repository.name === "eos-monitor-back"){ 
 			console.log('====== running delivery eos-monitor', new Date());
-        	exec('cd ~ && ./delivery.sh eos-monitor-back', (error, sdtout, stderror) => {
-        	      if (error) {
-        	        return console.error(error);
-        	      }
-        	      if (stderror) {
-        	        console.error('stderror', stderror);
-        	      }
-        	      console.log('sdtout', sdtout);
-        	});
-		}	
-		res.status(404).send("Repo not found!");
+        	        exec('cd ~ && ./delivery.sh eos-monitor-back', { maxBuffer: 1024 * 1000000 }, (error, sdtout, stderror) => {
+        	              if (error) {
+        	                return console.error(error);
+        	              }
+        	              if (stderror) {
+        	                console.error('stderror', stderror);
+        	              }
+        	              console.log('sdtout', sdtout);
+                              res.end();
+        	        });
+		} else {
+                   res.status(404).send("Repo not found!");     
+                }	
+		
 	});
 
 // ============== END of exports 
