@@ -27,20 +27,16 @@ const debug = require('debug')('asd:server');
 const http = require('http');
 const port = normalizePort(process.env.PORT || '3040');
 app.set('port', port);
-const server = http.createServer(app);
+const server = http.createServer(app, (req, res) => {
+    handler(req, res,  (err) => {
+      res.statusCode = 404
+      res.end('no such location');
+    });
+});
 
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-app.use((req, res, next) => {
-  handler(req, res,  (err) => {
-    res.statusCode = 404
-    res.end('no such location');
-    next();
-  })
-});
-
 
 require('./router/main.router')(handler);
 
