@@ -46,8 +46,7 @@ module.exports = (router) => {
 function execMonitoringHooksRequests(){
     if (STACK.length === 0){
         //console.log('STACK empty');
-        setTimeout(execMonitoringHooksRequests, timeUpdates);
-        return;
+        return setTimeout(execMonitoringHooksRequests, timeUpdates);
     }
     let repo = STACK[0].repository.name;
     console.log(`====== running delivery ${repo}`, new Date());
