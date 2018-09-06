@@ -15,11 +15,12 @@ module.exports = function(router) {
 		if (!data || !data.hook || !data.hook.config || !data.hook.config.secret || 
 			!data.repository || !data.repository.name){
 			console.log("Wrong data", data);
-			return res.status(444).send("Wrong data");
+			return res.send(444, "Wrong data");
 		}
 
 		if (data.hook.config.secret !== secret){
-			return res.status(500).send("Wrong secret", data.hook.config.secret);
+                        console.log(data.hook.config.secret);
+			return res.send(500, "Wrong secret", data.hook.config.secret);
 		}
 
 		if (data.repository.name === "eos-monitor"){
@@ -49,7 +50,7 @@ module.exports = function(router) {
         	        });
                         res.end();
 		} else {
-                   res.status(404).send("Repo not found!");     
+                   res.send(404, "Repo not found!");     
                 }	
 		
 	});
