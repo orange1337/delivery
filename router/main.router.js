@@ -14,11 +14,10 @@ module.exports = function(handler) {
                 if (!data || !data.hook || !data.hook.config || !data.hook.config.secret || 
                         !data.repository || !data.repository.name){
                         console.log("Wrong data", data);
-                        return res.send(444, "Wrong data");
                 }
 
                 if (data.hook.config.secret !== secret){
-                        return res.send(500, "Wrong secret", data.hook.config.secret);
+                        console.error("Wrong secret", data.hook.config.secre)
                 }
 
                 if (data.repository.name === "eos-monitor"){
@@ -33,7 +32,6 @@ module.exports = function(handler) {
                               console.log('sdtout', sdtout);
                               
                         });
-                        res.end();
                 } else if (data.repository.name === "eos-monitor-back"){ 
                         console.log('====== running delivery eos-monitor', new Date());
                         exec('cd ~ && ./delivery.sh eos-monitor-back', { maxBuffer: 1024 * 1000000 }, (error, sdtout, stderror) => {
@@ -46,9 +44,8 @@ module.exports = function(handler) {
                               console.log('sdtout', sdtout);
                              
                         });
-                        res.end();
                 } else {
-                   res.send("Repo not found!");     
+                   console.error("Repo not found!");     
                 }       
         });
         
