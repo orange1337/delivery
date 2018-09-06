@@ -61,7 +61,7 @@ module.exports = function(router) {
 };
 
 function signature (data) {
-    return 'sha1=' + crypto.createHmac('sha1', secret).update(data).digest('hex')
+    return 'sha1=' + crypto.createHmac('sha1', secret).update(JSON.stringify(data)).digest('hex')
 }
 
 
