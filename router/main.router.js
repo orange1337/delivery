@@ -12,7 +12,7 @@ module.exports = function(router) {
 	router.post('/delivery', (req, res) => {
 
 		let data = req.body;
-                let sign = req.headers['X-Hub-Signature'];
+                let sign = req.headers['x-hub-signature'];
 
 		if (!data  || !data.repository || !data.repository.name){
 			console.log("Wrong data", data);
