@@ -32,8 +32,9 @@ module.exports = function(router) {
         	                console.error('stderror', stderror);
         	              }
         	              console.log('sdtout', sdtout);
-                              res.end();
+                              
         	        });
+                        res.end();
 		} else if (data.repository.name === "eos-monitor-back"){ 
 			console.log('====== running delivery eos-monitor', new Date());
         	        exec('cd ~ && ./delivery.sh eos-monitor-back', { maxBuffer: 1024 * 1000000 }, (error, sdtout, stderror) => {
@@ -44,8 +45,9 @@ module.exports = function(router) {
         	                console.error('stderror', stderror);
         	              }
         	              console.log('sdtout', sdtout);
-                              res.end();
+                             
         	        });
+                        res.end();
 		} else {
                    res.status(404).send("Repo not found!");     
                 }	
