@@ -52,7 +52,8 @@ module.exports = function(router) {
         	        });
                         res.end();
 		} else {
-                   res.send("Repo not found!");     
+                   console.log("Repo not found!");
+                   res.end();     
                 }	
 		
 	});
