@@ -19,7 +19,7 @@ module.exports = function(router) {
 			return res.send(444, "Wrong data");
 		}
 
-                let createSign = sign(data);
+                let createSign = signature(data);
 		if (sign !== createSign){
                         console.log("Sign not equal", sign, createSign);
 			return res.send(500, "Wrong secret", createSign);
@@ -60,7 +60,7 @@ module.exports = function(router) {
 // ============== END of exports 
 };
 
-function sign (data) {
+function signature (data) {
     return 'sha1=' + crypto.createHmac('sha1', secret).update(data).digest('hex')
 }
 
