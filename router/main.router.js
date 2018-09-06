@@ -1,11 +1,9 @@
 /*
 * Created by Rost
 */
-const exec 		= require('child_process').exec;
-const createHandler     = require('github-webhook-handler')
-const handler           = createHandler({ path: '/delivery', secret: 'cryptolionsDelivery1337' })
+const exec  = require('child_process').exec;
 
-module.exports = function(router) {
+module.exports = function(handler) {
 
         handler.on('error', function (err) {
           console.error('Error:', err.message)

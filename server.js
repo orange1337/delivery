@@ -7,6 +7,8 @@ const cookieParser  = require('cookie-parser');
 const bodyParser    = require('body-parser');
 const helmet        = require('helmet');
 const compression   = require('compression');
+const createHandler = require('github-webhook-handler');
+const handler       = createHandler({ path: '/delivery', secret: 'cryptolionsDelivery1337' })
 
 process.on('uncaughtException', (err) => {
     console.log(`======= UncaughtException Main Server :  ${err}`);
@@ -31,8 +33,16 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
+app.use((req, res, next) => {
+  handler(req, res,  (err) => {
+    res.statusCode = 404
+    res.end('no such location');
+    next();
+  })
+});
 
-require('./router/main.router')(app);
+
+require('./router/main.router')(handler);
 
 // ========== cron tasks
 //require('./crons/main.cron')();
