@@ -12,13 +12,9 @@ module.exports = function(handler) {
         handler.on('push',  (event) => {
                 let data = event.payload;
                 console.log(data);
-                if (!data || !data.hook || !data.hook.config || !data.hook.config.secret || 
-                        !data.repository || !data.repository.name){
-                        console.log("Wrong data", data);
-                }
 
-                if (data.hook.config.secret !== secret){
-                        console.error("Wrong secret", data.hook.config.secre)
+                if (!data || !data.repository || !data.repository.name){
+                        console.log("Wrong data", data);
                 }
 
                 if (data.repository.name === "eos-monitor"){
