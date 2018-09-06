@@ -27,7 +27,8 @@ const debug = require('debug')('asd:server');
 const http = require('http');
 const port = normalizePort(process.env.PORT || '3040');
 app.set('port', port);
-const server = http.createServer(app, (req, res) => {
+
+const server = http.createServer((req, res) => {
     handler(req, res,  (err) => {
       res.statusCode = 404
       res.end('no such location');
