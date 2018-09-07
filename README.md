@@ -1,10 +1,10 @@
-# delivery deploy server with Slack notifications
+# Delivery deploy server with Slack notifications
 
 ## Manual installation 
-	- (node.js v.8^)[https://nodejs.org]
+	- node.js v.8^ https://nodejs.org
 	- sudo npm i -g pm2
 
-## deploy app
+## Deploy app
     - clone repo from github
 	- cd /delivery
 	- npm i
