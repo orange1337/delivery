@@ -1,17 +1,18 @@
 /*
 * Created by Rost
 */
-const path 		        = require('path');
-const fs   		        = require('fs');
-const exec 		        = require('child_process').exec;
-const crypto            = require('crypto');
-const secret            = 'cryptolionsDelivery1337';
-const MAX_BUFFER        = Math.pow(1024, 3); // max 1gb for child process
-const timeUpdates       = 1000; // update monitoring github webhooks requests
+const path 		      = require('path');
+const fs   		      = require('fs');
+const exec 		      = require('child_process').exec;
+const crypto        = require('crypto');
 
-let STACK = [];
+module.exports = (router, config, logSlack) => {
 
-module.exports = (router) => {
+  const secret        = config.secret;
+  const MAX_BUFFER    = config.MAX_BUFFER;
+  const timeUpdates   = config.timeUpdates;
+
+  let STACK = [];
 
 	router.post('/delivery', (req, res) => {
 
@@ -26,44 +27,49 @@ module.exports = (router) => {
 		}
 
 		if (sign !== createSign){
-            console.log('====== Sign not equal', sign, createSign);
+      console.log('====== Sign not equal', sign, createSign);
 			return res.status(500).send(`Wrong secret: ${createSign}`);
 		}
 
 		if (repo === 'eos-monitor' || repo === 'eos-monitor-back'){
-            STACK.push(data);
+      STACK.push(data);
 			return res.end();
 		}
 
-        console.log('====== Repo not found', repo);
-        res.end();	
+    console.log(`====== Repo not found ${repo}`);
+    logSlack(`====== Repo not found ${repo}`);
+    res.end();	
 	});
     
-    execMonitoringHooksRequests();
-// ============== END of exports 
-};
+  execMonitoringHooksRequests();
 
-function execMonitoringHooksRequests(){
+  function execMonitoringHooksRequests(){
     if (STACK.length === 0){
         //console.log('STACK empty');
         return setTimeout(execMonitoringHooksRequests, timeUpdates);
     }
     let repo = STACK[0].repository.name;
-    console.log(`====== running delivery ${repo}`, new Date());
+    console.log(`====== running delivery ${repo}`);
     exec(`sh ~/delivery.sh ${repo}`, { maxBuffer: MAX_BUFFER }, (error, sdtout, stderror) => {
-          if (error) {
-               console.error('error', error);
+          if (error){
+               logSlack(`[${repo} deploy error] : ${error}`);
           }
-          if (stderror) {
-               console.error('stderror', stderror);
+          if (stderror){
+               logSlack(`[${repo} deploy stderror] : ${stderror}`);
+          }
+          if (!stderror && !error){
+               logSlack(`[${repo} deploy success]`);
           }
           STACK.shift();
           execMonitoringHooksRequests();
     });
-}
+  }
+  
+  function signatureCreate (data) {
+      return 'sha1=' + crypto.createHmac('sha1', secret).update(JSON.stringify(data)).digest('hex')
+  }
 
-function signatureCreate (data) {
-    return 'sha1=' + crypto.createHmac('sha1', secret).update(JSON.stringify(data)).digest('hex')
-}
+// ============== END of exports 
+};
 
 

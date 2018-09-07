@@ -7,9 +7,13 @@ const cookieParser  = require('cookie-parser');
 const bodyParser    = require('body-parser');
 const helmet        = require('helmet');
 const compression   = require('compression');
+const config        = require('./config');
+
+const customSlack   = require('./modules/slack.notify');
+const logSlack      = customSlack.configure(config.loggerSlack.alerts);
 
 process.on('uncaughtException', (err) => {
-    console.log(`======= UncaughtException Main Server :  ${err}`);
+    logSlack(`======= UncaughtException Main Server :  ${err}`);
 });
 
 const app  = express();
@@ -32,7 +36,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 
-require('./router/main.router')(app);
+require('./router/main.router')(app, config, logSlack);
 
 
 // catch 404 and forward to error handler
