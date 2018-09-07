@@ -16,7 +16,7 @@ For creating `config.js` file you need to see `config.example.js` (default confi
     `#!/bin/sh
      dir_name=$1
      cd ~/$dir_name
-     git pull origin master
+     git pull
      cd ..
      docker-compose up --build -d`
 
