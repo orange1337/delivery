@@ -55,7 +55,7 @@ module.exports = (router, config, logSlack) => {
                logSlack(`[${repo} deploy error] : ${error}`);
           }
           if (stderror){
-               logSlack(`[${repo} deploy stderror] : ${stderror}`);
+               console.error('\x1b[36m%s\x1b[0m', `===== [${repo} deploy stderror] : ${stderror}`);
           }
           if (!stderror && !error){
                logSlack(`[${repo} deploy success]`);
