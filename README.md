@@ -12,6 +12,14 @@
 ## Create config.js 
 For creating `config.js` file you need to see `config.example.js` (default config)
 
+## delivery.sh script example 
+    `#!/bin/sh
+     dir_name=$1
+     cd ~/$dir_name
+     git pull origin master
+     cd ..
+     docker-compose up --build -d`
+
 ## Start server
     `pm2 start server.js`
 
