@@ -49,8 +49,8 @@ module.exports = (router, config, logSlack) => {
         return setTimeout(execMonitoringHooksRequests, timeUpdates);
     }
     let repo = STACK[0].repository.name;
-    console.log(`====== running delivery ${repo}`);
-    exec(`sh ~/delivery.sh ${repo}`, { maxBuffer: MAX_BUFFER }, (error, sdtout, stderror) => {
+    console.log(`====== running deploy ${repo}`);
+    exec(`sh ~/deploy.sh ${repo}`, { maxBuffer: MAX_BUFFER }, (error, sdtout, stderror) => {
           if (error){
                logSlack(`[${repo} deploy error] : ${error}`);
           }
