@@ -17,9 +17,9 @@ module.exports = (router, config, logSlack) => {
 	router.post('/delivery', (req, res) => {
 
 		let data        = req.body;
-        let sign        = req.headers['x-hub-signature'];
-        let createSign  = signatureCreate(data);
-        let repo        = data.repository.name;      
+    let sign        = req.headers['x-hub-signature'];
+    let createSign  = signatureCreate(data);
+    let repo        = data.repository.name;      
 
 		if (!data  || !data.repository || !data.repository.name){
 			console.log('====== Wrong data', data);
@@ -49,16 +49,19 @@ module.exports = (router, config, logSlack) => {
         return setTimeout(execMonitoringHooksRequests, timeUpdates);
     }
     let repo = STACK[0].repository.name;
+    let now = new Date();
+    let utc_time = new Date(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes());
+
     console.log(`====== running deploy ${repo}`);
     exec(`sh ~/deploy.sh ${repo}`, { maxBuffer: MAX_BUFFER }, (error, sdtout, stderror) => {
           if (error){
-               logSlack(`[${repo} deploy error] : ${error}`);
+               logSlack(`[${utc_time}][${repo} deploy error] : ${error}`);
           }
           if (stderror){
-               console.error('\x1b[36m%s\x1b[0m', `===== [${repo} deploy stderror] : ${stderror}`);
+               console.error('\x1b[36m%s\x1b[0m', `===== [${utc_time}] [${repo} deploy stderror] : ${stderror}`);
           }
           if (!error){
-               logSlack(`[${repo} deploy success]`);
+               logSlack(`[${utc_time}][${repo} deploy success]`);
           }
           STACK.shift();
           execMonitoringHooksRequests();

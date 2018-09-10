@@ -6,15 +6,13 @@
 const slack = require('slack');
 
 function slackAppender(config) {
-  let now = new Date();
-  let utc_time = new Date(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes());
   
   return (loggingEvent) => {
     console.log('\x1b[33m%s\x1b[0m', loggingEvent);
     const data = {
       token: config.token,
       channel: config.channel_id,
-      text: `[${utc_time}] ${loggingEvent}`,
+      text: loggingEvent,
       icon_url: config.icon_url,
       username: config.username
     };
