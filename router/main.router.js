@@ -53,7 +53,7 @@ module.exports = (router, config, logSlack) => {
     let utc_time = new Date(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes());
 
     console.log(`====== running deploy ${repo}`);
-    exec(`sh ~/deploy.sh ${repo}`, { maxBuffer: MAX_BUFFER }, (error, sdtout, stderror) => {
+    exec(`sh ${config.deployScriptPath}deploy.sh ${repo}`, { maxBuffer: MAX_BUFFER }, (error, sdtout, stderror) => {
           if (error){
                logSlack(`[${utc_time}][${repo} deploy error] : ${error}`);
           }

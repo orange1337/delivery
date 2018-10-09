@@ -12,6 +12,8 @@ config.secret    = 'yourSecretGithubHook';
 
 config.repoNames = ['eos-monitor', 'eos-monitor-back'];
 
+config.deployScriptPath = "~/";
+
 // slack notifications
 config.loggerSlack = {
       alerts: {
