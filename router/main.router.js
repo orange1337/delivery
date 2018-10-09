@@ -31,7 +31,7 @@ module.exports = (router, config, logSlack) => {
 			return res.status(500).send(`Wrong secret: ${createSign}`);
 		}
 
-		if (repo === 'eos-monitor' || repo === 'eos-monitor-back'){
+		if (config.repoNames.indexOf(repo) >= 0){
       STACK.push(data);
 			return res.end();
 		}

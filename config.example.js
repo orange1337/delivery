@@ -10,6 +10,8 @@ config.timeUpdates = 1000;
 config.pointUrl  = '/delivery';
 config.secret    = 'yourSecretGithubHook';
 
+config.repoNames = ['eos-monitor', 'eos-monitor-back'];
+
 // slack notifications
 config.loggerSlack = {
       alerts: {
